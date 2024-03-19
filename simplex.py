@@ -79,6 +79,7 @@ class Simplex:
             
             # No cambiamos xN ya que en todo caso será un vector de n - m ceros
             
+            self.fase1_B = self.fase1_A[:, self.fase1_Beta] # Actualizamos la matriz de coeficientes de restricciones basicas
             self.fase1_An = self.fase1_A[:, self.fase1_N] # Actualizamos la matriz de coeficientes de restricciones no basicas
             
             self.actualizar_inversa()
@@ -91,14 +92,10 @@ class Simplex:
             self.fase1_r = self.fase1_cN - self.fase1_cB @ self.fase1_B_inv @ self.fase1_An # recalculamos los coeficientes reducidos
         
         return self.fase1_r, self.fase1_z, self.fase1_N
-
-            
-                    
-
         
         
         
-Simplex().optimizar(datos.problemas["MP"])
+Simplex().optimizar(datos.problemas["12-1"])
 
     
     
