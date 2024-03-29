@@ -2,6 +2,8 @@ from lector import Lector
 import numpy as np
 from copy import copy
 
+np.set_printoptions(suppress=True)
+
 datos = Lector("datos.txt")
 class Simplex:
     def __init__(self):
@@ -16,6 +18,9 @@ class Simplex:
         
         self.iter_m = None
         self.iter_n = None
+
+        # Variable de la iteración
+        self.iteraciones = 0
         
     def optimizar(self, problema):
         self.c = problema.c # Coeficientes de la función objetivo
@@ -99,7 +104,6 @@ class Simplex:
         
 
     def iter(self):
-        self.iteraciones = 0
         self.iter_r = self.iter_cN - self.iter_cB @ self.iter_B_inv @ self.iter_An # Coeficientes reducidos
 
         while np.any(self.iter_r < 0):
@@ -132,9 +136,18 @@ class Simplex:
             
             self.iter_z += self.iter_theta * np.min(self.iter_r) # Valor de la variable objetivo
             self.iter_r = self.iter_cN - self.iter_cB @ self.iter_B_inv @ self.iter_An # recalculamos los coeficientes reducidos
+
+            self.iter_xB = np.round(self.iter_xB, 5)
+            self.iter_z = np.round(self.iter_z, 5)
+            self.iter_r = np.round(self.iter_r, 5)
+            self.iter_An = np.round(self.iter_An, 5)
+            self.iter_cB = np.round(self.iter_cB, 5)
+            self.iter_cN = np.round(self.iter_cN, 5)
+            self.iter_theta = np.round(self.iter_theta, 5)
+
             self.iteraciones += 1
 
-            print(f'Iteració {self.iteraciones}:, q = {self.iter_var_salida}, B(p) = {self.iter_var_entrada} , theta* = {self.iter_theta} , z = {self.iter_z}')
+            print(f'Iteració {self.iteraciones}:, q = {self.iter_var_salida + 1}, B(p) = {self.iter_var_entrada + 1} , theta* = {self.iter_theta} , z = {self.iter_z}') # Sumamos 1 para que las variables empiecen en 1
         
     def fase1(self):
         print('Inici FASE I ')
@@ -151,14 +164,11 @@ class Simplex:
     def end(self):
         print('FI Simplex primal \n')
         print('Solució òptima: ')
-        print(f'vb = {self.iter_B}')
+        print(f'vb = {self.iter_Beta + 1}') # Sumamos 1 para que las variables empiecen en 1
         print(f'xb = {self.iter_xB}')
         print(f'z = {self.iter_z}')
         print(f'r = {self.iter_r}')
         
 resol = Simplex().optimizar 
 
-resol(datos.problemas["49-2"])
-
-    
     
