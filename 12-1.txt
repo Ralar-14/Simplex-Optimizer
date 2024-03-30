@@ -1,0 +1,39 @@
+Inici simplex primal 
+
+Inici FASE I 
+Iteració 1:, q = 23, B(p) = 7 , theta* = 0.29851 , z = 2508.8209
+Iteració 2:, q = 28, B(p) = 4 , theta* = 0.40597 , z = 2148.50234
+Iteració 3:, q = 26, B(p) = 10 , theta* = 0.37602 , z = 1909.3566
+Iteració 4:, q = 29, B(p) = 12 , theta* = 0.37571 , z = 1697.45014
+Iteració 5:, q = 21, B(p) = 14 , theta* = 0.11711 , z = 1598.81559
+Iteració 6:, q = 22, B(p) = 1 , theta* = 0.18456 , z = 1347.65017
+Iteració 7:, q = 24, B(p) = 6 , theta* = 0.10287 , z = 1276.88528
+Iteració 8:, q = 27, B(p) = 9 , theta* = 1.17081 , z = 411.36916
+Iteració 9:, q = 30, B(p) = 13 , theta* = 0.38603 , z = 222.76295
+Iteració 10:, q = 7, B(p) = 5 , theta* = 0.0962 , z = 155.19084
+Iteració 11:, q = 25, B(p) = 3 , theta* = 0.34144 , z = 2e-05
+Solució bàsica factible torbada, iteració 11 
+
+Inici FASE II 
+Iteració 12:, q = 9, B(p) = 7 , theta* = 1.27418 , z = -29.05739
+Iteració 13:, q = 14, B(p) = 19 , theta* = 14.89188 , z = -38.59266
+Iteració 14:, q = 1, B(p) = 2 , theta* = 1.18573 , z = -68.36701
+Iteració 15:, q = 7, B(p) = 9 , theta* = 1.03017 , z = -82.24116
+Iteració 16:, q = 2, B(p) = 20 , theta* = 247.9613 , z = -279.23897
+Iteració 17:, q = 9, B(p) = 7 , theta* = 1.83169 , z = -310.49626
+Iteració 18:, q = 4, B(p) = 17 , theta* = 23.86137 , z = -324.80855
+Iteració 19:, q = 7, B(p) = 9 , theta* = 1.97787 , z = -413.72649
+Iteració 20:, q = 3, B(p) = 11 , theta* = 0.38775 , z = -414.8171
+Iteració 21:, q = 10, B(p) = 18 , theta* = 69.52402 , z = -451.77955
+Iteració 22:, q = 11, B(p) = 3 , theta* = 0.26841 , z = -464.86781
+Iteració 23:, q = 9, B(p) = 16 , theta* = 249.89481 , z = -469.31594
+Solució òptima trobada, iteració 23, z = -469.31594 
+FI Simplex primal 
+
+Solució òptima: 
+vb = [19 20  5  6  3 18 16 17 12 13]
+xb = [ 43.18333 311.69694   1.56484   2.51014   1.2752   44.27752 249.89481
+ 244.46906   3.68495   2.76949]
+z = -469.31594
+r = [163.90222  44.29635  62.58481  31.88442   0.48025   2.01999  30.06433
+  73.0715   81.4722  161.53643]

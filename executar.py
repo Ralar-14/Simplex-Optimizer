@@ -1,8 +1,7 @@
 from simplex import *
 
 #Escriu aqui el numero de problema a solucionar
-Problema = '49-1'
-
+Problema = '12-1'
 
 arxiu = f'{Problema}.txt'
 with open(arxiu, "w", encoding='utf-8') as archivo:

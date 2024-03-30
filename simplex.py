@@ -102,6 +102,35 @@ class Simplex:
         
         self.iter_B_inv = E @ self.iter_B_inv # Actualizamos la inversa de la matriz de coeficientes de restricciones básicas
         
+    def bland_argmin(self, array, entrada = True):
+        min_valor = float('inf')
+        min_indice_array = [-1] # Array de posiciones dentro de la array dada para los valores minimos
+        min_indice = int # Índice menor de min_indice_array
+        min_name = int # Nombre de la variable que entra o sale
+        for i in range(len(array)):
+            if array[i] < min_valor:
+                min_valor = array[i]
+                min_indice_array = [i]
+            elif array[i] == min_valor:
+                min_indice_array.append(i)
+        
+        if len(min_indice_array) == 1:
+            min_indice = min_indice_array[0]
+        elif entrada:
+            min_name = self.iter_N[[min_indice_array[0]]]
+            for i in min_indice_array:
+                if self.iter_N[i] < min_name:
+                    min_name = self.iter_N[i]
+                    min_indice = i
+        else:
+            min_name = self.iter_Beta[[min_indice_array[0]]] 
+            for i in min_indice_array:
+                if self.iter_Beta[i] < min_name:
+                    min_name = self.iter_Beta[i]
+                    min_indice = i
+        
+        return min_indice
+        
 
     def iter(self):
         self.iter_r = self.iter_cN - self.iter_cB @ self.iter_B_inv @ self.iter_An # Coeficientes reducidos
@@ -111,9 +140,9 @@ class Simplex:
             self.iter_theta_array = np.array([- self.iter_xB[i] / self.iter_dB[i] if self.iter_dB[i] < 0 else np.inf for i in range(self.iter_m)]) # Calculamos la lista de thetas posibles
             self.iter_theta = np.min(self.iter_theta_array) # Elegimos el theta minimo
             
-            self.iter_var_entrada_indice = np.argmin(self.iter_r) # Recuperamos el indice en la matriz pertinente de la variable que entra (no el sub-indice de la variable)
+            self.iter_var_entrada_indice = self.bland_argmin(self.iter_r) # Recuperamos el indice en la matriz pertinente de la variable que entra (no el sub-indice de la variable)
             self.iter_var_entrada = self.iter_N[self.iter_var_entrada_indice] # Recuperamos la variable que entra
-            self.iter_var_salida_indice = np.argmin(self.iter_theta_array) # Recuperamos el indice en la matriz pertinente de la variable que sale (no el sub-indice de la variable)
+            self.iter_var_salida_indice = self.bland_argmin(self.iter_theta_array, entrada = False) # Recuperamos el indice en la matriz pertinente de la variable que sale (no el sub-indice de la variable)
             self.iter_var_salida = self.iter_Beta[self.iter_var_salida_indice] # Elegimos la variable que sale
             
             self.iter_Beta[np.where(self.iter_Beta == self.iter_var_salida)], self.iter_N[np.where(self.iter_N == self.iter_var_entrada)] = self.iter_var_entrada, self.iter_var_salida # Actualizamos las variables basicas y no basicas
@@ -130,20 +159,12 @@ class Simplex:
             self.iter_An = self.iter_A[:, self.iter_N] # Actualizamos la matriz de coeficientes de restricciones no basicas
             
             self.actualizar_inversa()
-                    
+            
             self.iter_cB = self.iter_c[self.iter_Beta] # Coeficientes de las variables basicas en la funcion objetivo
             self.iter_cN = self.iter_c[self.iter_N] # Coeficientes de las variables no basicas en la funcion objetivo
             
             self.iter_z += self.iter_theta * np.min(self.iter_r) # Valor de la variable objetivo
             self.iter_r = self.iter_cN - self.iter_cB @ self.iter_B_inv @ self.iter_An # recalculamos los coeficientes reducidos
-
-            self.iter_xB = np.round(self.iter_xB, 5)
-            self.iter_z = np.round(self.iter_z, 5)
-            self.iter_r = np.round(self.iter_r, 5)
-            self.iter_An = np.round(self.iter_An, 5)
-            self.iter_cB = np.round(self.iter_cB, 5)
-            self.iter_cN = np.round(self.iter_cN, 5)
-            self.iter_theta = np.round(self.iter_theta, 5)
 
             self.iteraciones += 1
 
@@ -165,9 +186,9 @@ class Simplex:
         print('FI Simplex primal \n')
         print('Solució òptima: ')
         print(f'vb = {self.iter_Beta + 1}') # Sumamos 1 para que las variables empiecen en 1
-        print(f'xb = {self.iter_xB}')
-        print(f'z = {self.iter_z}')
-        print(f'r = {self.iter_r}')
+        print(f'xb = {np.round(self.iter_xB, 4)}')
+        print(f'z = {np.round(self.iter_z, 4)}')
+        print(f'r = {np.round(self.iter_r, 4)}')
         
 resol = Simplex().optimizar 
 
