@@ -1,11 +1,16 @@
 from simplex import *
 
 #Escriu aqui el numero de problema a solucionar
-Problema = '12-1'
+Problema = '12-3'
 
-arxiu = f'{Problema}.txt'
-with open(arxiu, "w", encoding='utf-8') as archivo:
+archivo = f'{Problema}.txt'
+
+with open(archivo, "w", encoding='utf-8') as file:
     # Redirigir la salida estándar (stdout) hacia el archivo
     import sys
-    sys.stdout = archivo
-    resol(datos.problemas[Problema])
+    sys.stdout = file
+    try:
+        resol(datos.problemas[Problema])  
+              
+    except:
+        print(f'Error al resolver el problema {Problema}')

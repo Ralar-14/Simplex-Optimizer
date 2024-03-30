@@ -1,6 +1,8 @@
 from lector import Lector
 import numpy as np
 from copy import copy
+from math import isclose
+from sys import stdout
 
 np.set_printoptions(suppress=True)
 
@@ -32,6 +34,9 @@ class Simplex:
         print('Inici simplex primal \n') #Falta regla de Bland
         # Fase 1
         self.fase1()
+        if isclose(self.iter_z, 0) == False: #Això voldiria dir que el problema no té solució ja que una de les variables artificials esta dins de la base
+            clean_output()
+            raise Exception(f"El problema no té solució, iteracions realitzades: {self.iteraciones} \n")
         
         # Fase 2
         self.fase2()
@@ -103,10 +108,11 @@ class Simplex:
         self.iter_B_inv = E @ self.iter_B_inv # Actualizamos la inversa de la matriz de coeficientes de restricciones básicas
         
     def bland_argmin(self, array, entrada = True):
-        min_valor = float('inf')
-        min_indice_array = [-1] # Array de posiciones dentro de la array dada para los valores minimos
+        min_valor = float('inf') # Cota superior para el valor mínimo
+        min_indice_array = [] # Array de posiciones dentro de la array dada para los valores minimos
         min_indice = int # Índice menor de min_indice_array
         min_name = int # Nombre de la variable que entra o sale
+        
         for i in range(len(array)):
             if array[i] < min_valor:
                 min_valor = array[i]
@@ -116,14 +122,17 @@ class Simplex:
         
         if len(min_indice_array) == 1:
             min_indice = min_indice_array[0]
+            
         elif entrada:
             min_name = self.iter_N[[min_indice_array[0]]]
+            min_indice = 0
             for i in min_indice_array:
                 if self.iter_N[i] < min_name:
                     min_name = self.iter_N[i]
                     min_indice = i
         else:
             min_name = self.iter_Beta[[min_indice_array[0]]] 
+            min_indice = 0
             for i in min_indice_array:
                 if self.iter_Beta[i] < min_name:
                     min_name = self.iter_Beta[i]
@@ -139,7 +148,12 @@ class Simplex:
             self.iter_dB = - self.iter_B_inv @ self.iter_An[:, np.argmin(self.iter_r)] # Direccion basica factible
             self.iter_theta_array = np.array([- self.iter_xB[i] / self.iter_dB[i] if self.iter_dB[i] < 0 else np.inf for i in range(self.iter_m)]) # Calculamos la lista de thetas posibles
             self.iter_theta = np.min(self.iter_theta_array) # Elegimos el theta minimo
-            
+                    
+            # Identificar la no acotación del problema
+            if np.all(self.iter_dB >= 0):
+                clean_output()
+                raise Exception("El problema no tiene solución acotada")
+                    
             self.iter_var_entrada_indice = self.bland_argmin(self.iter_r) # Recuperamos el indice en la matriz pertinente de la variable que entra (no el sub-indice de la variable)
             self.iter_var_entrada = self.iter_N[self.iter_var_entrada_indice] # Recuperamos la variable que entra
             self.iter_var_salida_indice = self.bland_argmin(self.iter_theta_array, entrada = False) # Recuperamos el indice en la matriz pertinente de la variable que sale (no el sub-indice de la variable)
@@ -150,8 +164,9 @@ class Simplex:
             self.iter_xB += self.iter_theta * self.iter_dB # Actualizamos el valor de las variables basicas
             self.iter_xB[self.iter_var_salida_indice] = self.iter_theta # Actualizamos el valor de la variable que entra
             
-            if np.any(self.iter_xB < 0): # Si xB es negativo, el problema no tiene solucion
-                return "El problema no tiene solución"
+            if np.any(self.iter_xB < 0): # Si xB es negativo, el problema no tiene solucio
+                clean_output()
+                raise Exception("El problema no tiene solución")
             
             # No cambiamos xN ya que en todo caso será un vector de n - m ceros
             
@@ -191,5 +206,7 @@ class Simplex:
         print(f'r = {np.round(self.iter_r, 4)}')
         
 resol = Simplex().optimizar 
+
+    
 
     

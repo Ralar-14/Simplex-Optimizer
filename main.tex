@@ -1,0 +1,43 @@
+\documentclass{aux}
+
+\title{D3} %Titre du fichier
+
+\begin{document}
+
+%----------- Informations du rapport ---------
+
+\titol{Simplex Primal} %Titol del fitxer
+\UE{FIB UPC} %Nom de la UE
+\materia{Informe sobre la creación de un solver de Simplex primal} %Nom de la materia
+
+\tutor{ Linares, \textsc{MªPaz}} %Nom del tutor
+
+\alumnes{
+        Álvarez Aragones, \textsc{Ruben} \\
+        Mejía Rota, \textsc{César Elías}}
+         %Nom dels alumnes
+
+%----------- Initialisation -------------------
+        
+\fairemarges %Mostrar margens
+\fairepagedegarde
+\tabledematieres
+
+\section{Descripción del algorítmo}
+
+El algorítmo Simplex es un método de optimización que se utiliza para resolver problemas de programación lineal. 
+\\
+\\
+Para la implementación del algorítmo Simplex Primal se ha seguido el proceso matemático de cálculo que hemos visto en clase. 
+\\
+\\
+Se basa en la idea de que cualquier problema de programación lineal puede ser transformado en una forma estándar, y que la solución óptima de un problema en esta forma puede ser encontrada en los vértices de la región factible.
+\\
+\\
+Hemos optado por optimizar el algorítmo de forma que no se realicen cáluclos de inversas de matrices, ya que es un proceso costoso computacionalmente. Para ello, hemos utilizado la técnica de actualización de inversas de matrices, que consiste en actualizar la inversa de la matriz de restricciones en cada iteración del algorítmo. Además, hemos implementado fase I y fase II en el programa para que no sea necesario calcular la primera inversa.
+\\
+\\
+El algorítmo Simplex generado se divide, como hemos comentado, en dos fases: la fase I y la fase II. La fase I se encarga de encontrar una solución básica factible ayudandose de un problema artificial, en el que se añaden variables artificiales a cada una de las restricciones y se substituye la función objetivo a minimizar por la suma de dichas variables. De igual manera, estas variables artificiales son las que empiezan dentro de la base de la solución a este problema artificial. Cuando encontremos la solución òptima de dicho problema, habremos encontrado una SBF (solución basica factible) del problema original y podremos empezar con la fase II.
+En la fase II repetimos el mismo algoritmo usado previamente en la Fase I para encontrar la solución óptima del problema original, partiendo con la SBF encontrada en la fase I.
+
+\end{document}
