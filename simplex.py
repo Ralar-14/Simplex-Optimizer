@@ -2,11 +2,17 @@ from lector import Lector
 import numpy as np
 from copy import copy
 from math import isclose
-from sys import stdout
+import sys
 
 np.set_printoptions(suppress=True)
 
 datos = Lector("datos.txt")
+
+class No_Acotado(Exception):
+    pass
+
+class No_Solucion(Exception):
+    pass
 class Simplex:
     def __init__(self):
         # Inicializamos las variables para evitar errores
@@ -31,13 +37,12 @@ class Simplex:
         self.m = self.A.shape[0] # Número de restricciones
         self.n = self.A.shape[1] # Número de variables
         
-        print('Inici simplex primal \n') #Falta regla de Bland
+        print('Inici simplex primal \n') 
         # Fase 1
         self.fase1()
-        if isclose(self.iter_z, 0) == False: #Això voldiria dir que el problema no té solució ja que una de les variables artificials esta dins de la base
-            clean_output()
-            raise Exception(f"El problema no té solució, iteracions realitzades: {self.iteraciones} \n")
-        
+        if np.round(self.iter_z, 5) > 0: #Això voldiria dir que el problema no té solució ja que una de les variables artificials esta dins de la base
+            raise No_Solucion(f"El problema no té solució, iteracions realitzades: {self.iteraciones} \n")
+        print(f'Solució bàsica factible torbada, iteració {self.iteraciones} \n')
         # Fase 2
         self.fase2()
 
@@ -125,19 +130,18 @@ class Simplex:
             
         elif entrada:
             min_name = self.iter_N[[min_indice_array[0]]]
-            min_indice = 0
+            min_indice = min_indice_array[0]
             for i in min_indice_array:
                 if self.iter_N[i] < min_name:
                     min_name = self.iter_N[i]
-                    min_indice = i
+                    min_indice = min_indice_array[i]
         else:
             min_name = self.iter_Beta[[min_indice_array[0]]] 
-            min_indice = 0
+            min_indice = min_indice_array[0]
             for i in min_indice_array:
                 if self.iter_Beta[i] < min_name:
                     min_name = self.iter_Beta[i]
-                    min_indice = i
-        
+                    min_indice = min_indice_array[i]
         return min_indice
         
 
@@ -150,9 +154,8 @@ class Simplex:
             self.iter_theta = np.min(self.iter_theta_array) # Elegimos el theta minimo
                     
             # Identificar la no acotación del problema
-            if np.all(self.iter_dB >= 0):
-                clean_output()
-                raise Exception("El problema no tiene solución acotada")
+            if np.all(self.iter_dB >= 0): #Problemas con la no acotación
+                raise No_Acotado("El problema no té solució acotada")
                     
             self.iter_var_entrada_indice = self.bland_argmin(self.iter_r) # Recuperamos el indice en la matriz pertinente de la variable que entra (no el sub-indice de la variable)
             self.iter_var_entrada = self.iter_N[self.iter_var_entrada_indice] # Recuperamos la variable que entra
@@ -165,8 +168,7 @@ class Simplex:
             self.iter_xB[self.iter_var_salida_indice] = self.iter_theta # Actualizamos el valor de la variable que entra
             
             if np.any(self.iter_xB < 0): # Si xB es negativo, el problema no tiene solucio
-                clean_output()
-                raise Exception("El problema no tiene solución")
+                raise No_Solucion("El problema no té solució")
             
             # No cambiamos xN ya que en todo caso será un vector de n - m ceros
             
@@ -189,7 +191,7 @@ class Simplex:
         print('Inici FASE I ')
         self.generar_PA()
         self.iter()
-        print(f'Solució bàsica factible torbada, iteració {self.iteraciones} \n')
+        
     
     def fase2(self):
         print('Inici FASE II ')
@@ -205,8 +207,4 @@ class Simplex:
         print(f'z = {np.round(self.iter_z, 4)}')
         print(f'r = {np.round(self.iter_r, 4)}')
         
-resol = Simplex().optimizar 
-
-    
-
-    
+resol = Simplex().optimizar # Función para resolver un problema

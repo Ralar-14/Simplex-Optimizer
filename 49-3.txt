@@ -1,0 +1,15 @@
+Inici simplex primal 
+
+Inici FASE I 
+Iteració 1:, q = 28, B(p) = 10 , theta* = 0.15254237288135594 , z = 997.0169491525423
+Iteració 2:, q = 10, B(p) = 12 , theta* = 1.0 , z = 637.0
+Iteració 3:, q = 25, B(p) = 15 , theta* = 188.0 , z = 449.0
+Iteració 4:, q = 26, B(p) = 16 , theta* = 58.99999999999999 , z = 390.0
+Iteració 5:, q = 27, B(p) = 17 , theta* = 121.00000000000001 , z = 269.0
+Iteració 6:, q = 29, B(p) = 19 , theta* = 3.0 , z = 266.0
+Iteració 7:, q = 30, B(p) = 20 , theta* = 32.0 , z = 234.0
+
+--------------------------------------------------
+
+Error al resoldre el problema 49-3
+El problema no té solució
