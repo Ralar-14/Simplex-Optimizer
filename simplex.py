@@ -1,8 +1,7 @@
 from lector import Lector
 import numpy as np
 from copy import copy
-from math import isclose
-import sys
+
 
 np.set_printoptions(suppress=True)
 
@@ -33,16 +32,16 @@ class Simplex:
     def optimizar(self, problema):
         self.c = problema.c # Coeficientes de la función objetivo
         self.A = problema.A # Coeficientes de las restricciones
-        self.b = problema.b # Lado derecho de las restricciones
+        self.b = problema.b # Termino independiente de las restricciones
         self.m = self.A.shape[0] # Número de restricciones
         self.n = self.A.shape[1] # Número de variables
         
-        print('Inici simplex primal \n') 
-        # Fase 1
+        print('Inicio Simplex Primal \n') 
+        # Fase I
         self.fase1()
-        if np.round(self.iter_z, 5) > 0: #Això voldiria dir que el problema no té solució ja que una de les variables artificials esta dins de la base
-            raise No_Solucion(f"El problema no té solució, iteracions realitzades: {self.iteraciones} \n")
-        print(f'Solució bàsica factible torbada, iteració {self.iteraciones} \n')
+        if np.round(self.iter_z, 5) > 0: #Nos indica que el poblema no tiene solución puesto que hay una variable artificial en la base al final de la Fase I
+            raise No_Solucion(f"El problema no tiene solución, iteraciones realizadas: {self.iteraciones} \n")
+        print(f'Solución básica factible encontrada, iteración {self.iteraciones} \n')
         # Fase 2
         self.fase2()
 
@@ -154,8 +153,8 @@ class Simplex:
             self.iter_theta = np.min(self.iter_theta_array) # Elegimos el theta minimo
                     
             # Identificar la no acotación del problema
-            if np.all(self.iter_dB >= 0): #Problemas con la no acotación
-                raise No_Acotado("El problema no té solució acotada")
+            if np.all(self.iter_dB >= 0): # Problemas con la no acotación
+                raise No_Acotado("El problema no tiene solución acotada")
                     
             self.iter_var_entrada_indice = self.bland_argmin(self.iter_r) # Recuperamos el indice en la matriz pertinente de la variable que entra (no el sub-indice de la variable)
             self.iter_var_entrada = self.iter_N[self.iter_var_entrada_indice] # Recuperamos la variable que entra
@@ -168,7 +167,7 @@ class Simplex:
             self.iter_xB[self.iter_var_salida_indice] = self.iter_theta # Actualizamos el valor de la variable que entra
             
             if np.any(self.iter_xB < 0): # Si xB es negativo, el problema no tiene solucio
-                raise No_Solucion("El problema no té solució")
+                raise No_Solucion("El problema no tiene solución")
             
             # No cambiamos xN ya que en todo caso será un vector de n - m ceros
             
@@ -185,23 +184,23 @@ class Simplex:
 
             self.iteraciones += 1
 
-            print(f'Iteració {self.iteraciones}:, q = {self.iter_var_salida + 1}, B(p) = {self.iter_var_entrada + 1} , theta* = {self.iter_theta} , z = {self.iter_z}') # Sumamos 1 para que las variables empiecen en 1
+            print(f'Iteración {self.iteraciones}:, q = {self.iter_var_salida + 1}, B(p) = {self.iter_var_entrada + 1} , theta* = {self.iter_theta} , z = {self.iter_z}') # Sumamos 1 para que las variables empiecen en 1
         
     def fase1(self):
-        print('Inici FASE I ')
+        print('Inicio FASE I ')
         self.generar_PA()
         self.iter()
         
     
     def fase2(self):
-        print('Inici FASE II ')
+        print('Inicio FASE II ')
         self.generar_sol()
         self.iter()
-        print(f'Solució òptima trobada, iteració {self.iteraciones}, z = {self.iter_z} ')
+        print(f'Solución óptima encontrada, iteración {self.iteraciones}, z = {self.iter_z} ')
         
     def end(self):
-        print('FI Simplex primal \n')
-        print('Solució òptima: ')
+        print('FIN Simplex primal \n')
+        print('Solución óptima: ')
         print(f'vb = {self.iter_Beta + 1}') # Sumamos 1 para que las variables empiecen en 1
         print(f'xb = {np.round(self.iter_xB, 4)}')
         print(f'z = {np.round(self.iter_z, 4)}')
